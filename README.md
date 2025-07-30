@@ -3,11 +3,16 @@ pve_lxc_deploy
 
 Ansible role to deploy, configure and destroy lxc containers on Proxmox VE
 
+More information on the variable options on the URLs below.
+
+<https://galaxy.ansible.com/ui/repo/published/community/proxmox/content/module/proxmox/>
+<https://galaxy.ansible.com/ui/repo/published/community/proxmox/content/module/proxmox_template/>
+
 Requirements
 ------------
 
 - Proxmox VE api token
-- LXC template - feel free to choose the lxc container image from <https://images.linuxcontainers.org/> and make sure you get the cloud one.
+- LXC template - feel free to choose the lxc container image from <https://images.linuxcontainers.org/> and make sure you get the cloud one as it has cloud-init package installed.
   You can use the download tag and pve_lxc_deploy_dl_template variable to automate it.
 - proxmoxer python package
 - community.proxmox collection
@@ -15,13 +20,25 @@ Requirements
 Role Variables
 --------------
 
-Proxmox VE host settings:
+Proxmox VE host connection variables:
 
-- pve_lxc_deploy_proxmox_api_ip: "10.0.0.10"
-- pve_lxc_deploy_proxmox_api_token_user: "root@pam"
-- pve_lxc_deploy_proxmox_api_token_id: "proxmox""
-- pve_lxc_deploy_proxmox_api_token_secret: dy8293yruqewbfijbaifb389rfbe
-- pve_lxc_deploy_node: "nodename01"
+```yaml
+pve_lxc_deploy_proxmox_api_ip: "10.0.0.10"
+pve_lxc_deploy_proxmox_api_token_user: "root@pam"
+pve_lxc_deploy_proxmox_api_token_id: "proxmox"
+pve_lxc_deploy_proxmox_api_token_secret: dy8293yruqewbfijbaifb389rfbe
+pve_lxc_deploy_node: "nodename01"
+```
+
+LXC container template download variable:
+
+```yaml
+pve_lxc_deploy_dl_template:
+  storage: local # Proxmox VE storage ID which has Container template storage option
+  url: "https://images.linuxcontainers.org/images/almalinux/9/amd64/cloud/20250729_23:08/rootfs.tar.xz"
+  template: "lxc-almalinux9.tar.xz" # the final template filename on the Proxmox VE host
+  force: false # set to true if you want to overwrite a template
+```
 
 LXC container variables:
 
@@ -45,18 +62,7 @@ pve_lxc_deploy_container:
     size: 10
 ```
 
-If you want to automatically also download a container template, set this variable:
-
-```yaml
-pve_lxc_deploy_dl_template:
-  storage: local
-  content_type: vztmpl
-  url: "https://images.linuxcontainers.org/images/almalinux/9/amd64/cloud/20250729_23:08/rootfs.tar.xz"
-  template: "lxc-almalinux9.tar.xz"
-  force: true
-```
-
-Tags used:
+Available tags:
 
 - deploy - creates the container
 - start - starts the container
